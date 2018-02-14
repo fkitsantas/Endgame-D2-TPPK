@@ -1,0 +1,147 @@
+void
+CAdvancedButton::ButtonPressed(void)
+{
+	if(CAdvancedButton::m_Player.IsIdle())
+	{
+		int iSkillId = CAdvancedButton::m_Player.GetSkill(CAdvancedButton::m_bLeft);
+		int iDamageType = 0;
+
+		if(iSkillId == D2S_TELEPORT)
+		{
+			POINT ptOrigin = {CAdvancedButton::m_Player.GetPosX(), CAdvancedButton::m_Player.GetPosY()};
+			POINT ptMouse = {(*p_D2CLIENT_MouseX), (*p_D2CLIENT_MouseY)};
+
+			CGame::ScreenToMap((int*)&ptMouse.x, (int*)&ptMouse.y);
+			int nAngle = CalculateAngle(ptOrigin, ptMouse);
+
+			POINT ptCastTo = CalculatePointOnTrack(ptOrigin, 40, nAngle);
+
+			CAdvancedButton::m_Player.CastTo(ptCastTo.x, ptCastTo.y, CAdvancedButton::m_bLeft);
+		} else
+		{
+			iDamageType = CGame::GetSkillDamageType(iSkillId);
+			CUnit Unit;
+
+			if(CAdvancedButton::FindClosestUnit(Unit, iDamageType, !(iSkillId == D2S_CHARGEDSTRIKE), !(iSkillId == D2S_CHARGEDSTRIKE)))
+			{
+				CAdvancedButton::m_Player.CastOnUnit(Unit, CAdvancedButton::m_bLeft);
+			}
+		}
+	}
+}
+
+bool
+CAdvancedButton::FindClosestUnit(CUnit& Unit, int iDamageType, bool bUseTestSelect, bool bCheckLoS)
+{
+	int iNearst = 9999;
+	int iMouseX = (*p_D2CLIENT_MouseX), iMouseY = (*p_D2CLIENT_MouseY);
+	std::list<CUnit*> UnitList;
+
+	CGame::ScreenToMap(&iMouseX, &iMouseY);
+	CGame::GetUnits(UnitList, CAdvancedButton::m_bPvp ? UNIT_PLAYER : UNIT_MONSTER);
+
+	for(std::list<CUnit*>::iterator entry = UnitList.begin(); entry != UnitList.end(); entry++)
+	{
+		if(CGame::GetDistance(iMouseX, iMouseY, (*entry)->GetPosX(), (*entry)->GetPosY()) > iNearst)
+			continue;
+
+		if(!CAdvancedButton::m_bPvp)
+			if((*entry)->GetResistance(iDamageType) > 99)
+				continue;
+
+		if((*entry)->GetStat(STAT_HP) >> 8 <= 0)
+			continue;
+
+		if(!CAdvancedButton::m_bPvp)
+			if(!CGame::GetMonsterColor((*entry)->GetClassId()))
+				continue;
+
+		if(!CAdvancedButton::m_bPvp)
+			if(bUseTestSelect && !D2CLIENT_UnitTestSelect((*entry)->FindUnit(), 0, 1, 0))
+				continue;
+
+		if(bCheckLoS && D2COMMON_CheckUnitCollision(CAdvancedButton::m_Player.FindUnit(), (*entry)->FindUnit(), 4))
+			continue;
+
+		Unit = CUnit((*entry)->GetId(), (*entry)->GetType());
+		iNearst = CGame::GetDistance(iMouseX, iMouseY, (*entry)->GetPosX(), (*entry)->GetPosY());
+
+		delete (*entry);
+	}
+
+	if(iNearst != 9999)
+		return true;
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+#
+if(iSkillId == D2S_TELEPORT)
+#
+                {
+#
+                        POINT ptOrigin = {CAdvancedButton::m_Player.GetPosX(), CAdvancedButton::m_Player.GetPosY()};
+#
+                        POINT ptMouse = {(*p_D2CLIENT_MouseX), (*p_D2CLIENT_MouseY)};
+#
+ 
+#
+                        CGame::ScreenToMap((int*)&ptMouse.x, (int*)&ptMouse.y);
+#
+                        int nAngle = CalculateAngle(ptOrigin, ptMouse);
+#
+                        int iRadius = 100;
+#
+ 
+#
+                        POINT ptCastTo;
+#
+ 
+#
+                        while(true)
+#
+                        {
+#
+                                if(iRadius <= 0)
+#
+                                        return bNamelock;
+#
+ 
+#
+                                ptCastTo = CalculatePointOnTrack(ptOrigin, iRadius--, nAngle);
+#
+ 
+#
+                                if(CAdvancedButton::GetRoom(ptCastTo.x, ptCastTo.y))
+#
+                                {
+#
+                                        if(::abs(CAdvancedButton::m_Player.GetPosX() - ptCastTo.x) <= 50)
+#
+                                                if(::abs(CAdvancedButton::m_Player.GetPosY() - ptCastTo.y) <= 50)
+#
+                                                        break;
+#
+                                }
+#
+                        }
+#
+ 
+#
+                                pAttack->lpTargetUnit = NULL;
+#
+                                pAttack->dwAttackType = CAdvancedButton::m_bLeft ? ATTACKTYPE_SHIFTLEFT : ATTACKTYPE_SHIFTRIGHT;
+#
+                                pAttack->dwTargetX = ptCastTo.x;
+#
+                                pAttack->dwTargetY = ptCastTo.y;
+#
+                                return false;

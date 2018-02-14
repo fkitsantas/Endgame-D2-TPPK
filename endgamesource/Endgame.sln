@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{5E32DE5A-9519-49E6-8844-51325345CA77}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IHTPPK 5.8 (v1.12)", "EuroTPPK.vcproj", "{4DD2A71B-109C-4686-98BB-8F57F822CEFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DD2A71B-109C-4686-98BB-8F57F822CEFE}.Debug|Win32.ActiveCfg = Release|Win32
+		{4DD2A71B-109C-4686-98BB-8F57F822CEFE}.Debug|Win32.Build.0 = Release|Win32
+		{4DD2A71B-109C-4686-98BB-8F57F822CEFE}.Release|Win32.ActiveCfg = Release|Win32
+		{4DD2A71B-109C-4686-98BB-8F57F822CEFE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
